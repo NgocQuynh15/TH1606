@@ -178,29 +178,43 @@ VALUES
 SELECT * FROM bat_dong_san
 
 -- 6. Bảng hình ảnh sản phẩm
-CREATE TABLE hinh_anh (
-    id SERIAL PRIMARY KEY,
-    id_bds INT,
-    url VARCHAR(300),
-    mo_ta VARCHAR(200)
+CREATE TABLE hinh_anh_bds (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(), 
+    id_bds UUID UNIQUE NOT NULL,
+    url TEXT[] NOT NULL,
+    mo_ta VARCHAR(200) DEFAULT 'chuacapnhat',
+    CONSTRAINT fk_hinhanh_bds FOREIGN KEY (id_bds) REFERENCES bat_dong_san(id) ON DELETE CASCADE
 );
 
+SELECT * FROM hinh_anh_bds
+
 -- 7. Bảng video sản phẩm
-CREATE TABLE video (
-    id SERIAL PRIMARY KEY,
-    id_bds INT,
-    url VARCHAR(300),
-    mo_ta VARCHAR(200)
+CREATE TABLE video_bds (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id_bds UUID UNIQUE NOT NULL,
+    url TEXT[] NOT NULL,
+    mo_ta VARCHAR(200) DEFAULT 'chuacapnhat',
+	CONSTRAINT fk_video_bds FOREIGN KEY (id_bds) REFERENCES bat_dong_san(id) ON DELETE CASCADE
 );
+
+SELECT * FROM video_bds
 
 -- 8. Bảng giao dịch
 CREATE TABLE giao_dich (
-    id SERIAL PRIMARY KEY,
-    id_khach_hang INT,
-    id_bds INT,
-    loai VARCHAR(100), -- mua, ban, thue
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id_khach_hang UUID NOT NULL,
+    id_bds UUID NOT NULL,
+    loai VARCHAR(100) NOT NULL DEFAULT 'chuacapnhat', 
     ngay_giao_dich TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    trang_thai VARCHAR(50)
+    trang_thai VARCHAR(50) DEFAULT 'choduyet',
+    
+    -- Ràng buộc giá trị hợp lệ
+    CONSTRAINT chk_loai_gd CHECK (loai IN ('mua', 'ban', 'thue', 'chuacapnhat')),
+    CONSTRAINT chk_trang_thai_gd CHECK (trang_thai IN ('choduyet', 'hoanthanh', 'huy')),
+    
+    -- Khóa ngoại
+    CONSTRAINT fk_gd_khachhang FOREIGN KEY (id_khach_hang) REFERENCES khach_hang(id_nguoi_dung) ON DELETE CASCADE,
+    CONSTRAINT fk_gd_bds FOREIGN KEY (id_bds) REFERENCES bat_dong_san(id) ON DELETE CASCADE
 );
 
 INSERT INTO giao_dich (id_khach_hang, id_bds, loai, ngay_giao_dich, trang_thai)
