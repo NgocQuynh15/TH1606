@@ -1019,7 +1019,7 @@ CREATE TABLE IF NOT EXISTS lich_su_he_thong (
 -- Trigger helper: tự động tạo profile khi insert vào nguoi_dung
 -- (Tạo quan_tri / khach_hang / moi_gioi tương ứng)
 -- Phụ trách: Tuấn Anh (logic DB)
--- ===========================
+-- ===========================hhhhhh
 CREATE OR REPLACE FUNCTION fn_after_insert_nguoi_dung()
 RETURNS TRIGGER AS $$
 BEGIN
